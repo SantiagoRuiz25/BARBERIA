@@ -1,0 +1,122 @@
+<div class="dash">
+  <div class="dash-head">
+    <h2>Panel de Administración</h2>
+    <p>Resumen completo de Estudio 4-4-4 Barber.</p>
+  </div>
+
+  <!-- KPIs Principales -->
+  <div class="kpi-grid">
+    <div class="kpi-card card">
+      <span class="kpi-label">Turnos de hoy</span>
+      <strong class="kpi-value">{{ todayAppointments().length }}</strong>
+      <span class="kpi-sub">{{ confirmedToday() }} confirmados</span>
+    </div>
+    <div class="kpi-card card">
+      <span class="kpi-label">Ingresos de hoy</span>
+      <strong class="kpi-value gold">{{ formatPrice(revenueToday()) }}</strong>
+      <span class="kpi-sub">estimado, sin cancelados</span>
+    </div>
+    <div class="kpi-card card">
+      <span class="kpi-label">Pendientes</span>
+      <strong class="kpi-value warning">{{ pendingCount() }}</strong>
+      <span class="kpi-sub">requieren atención</span>
+    </div>
+    <div class="kpi-card card">
+      <span class="kpi-label">Total cortes</span>
+      <strong class="kpi-value">{{ totalCuts() }}</strong>
+      <span class="kpi-sub">todos los tiempos</span>
+    </div>
+  </div>
+
+  <!-- KPIs Totales -->
+  <div class="kpi-grid">
+    <div class="kpi-card card kpi-wide">
+      <span class="kpi-label">Ingresos totales</span>
+      <strong class="kpi-value gold large">{{ formatPrice(totalRevenue()) }}</strong>
+      <span class="kpi-sub">acumulado histórico</span>
+    </div>
+    <div class="kpi-card card">
+      <span class="kpi-label">Cancelados</span>
+      <strong class="kpi-value danger">{{ cancelledAppointments().length }}</strong>
+      <span class="kpi-sub">turnos cancelados</span>
+    </div>
+  </div>
+
+  <!-- Lista de turnos -->
+  <div class="dash-section card">
+    <div class="section-title">
+      <h3>Turnos de hoy</h3>
+      <span class="badge">{{ todayAppointments().length }}</span>
+    </div>
+    <div class="appt-table">
+      <div class="appt-row appt-head">
+        <span>Cliente</span><span>Servicio</span><span>Hora</span><span>Estado</span>
+      </div>
+      @for (a of todayAppointments(); track a.id) {
+        <div class="appt-row">
+          <span class="client-name">{{ a.clientName }}</span>
+          <span>{{ a.serviceName }}</span>
+          <span>{{ a.time }}</span>
+          <span class="status" [class]="a.status">{{ a.status }}</span>
+        </div>
+      } @empty {
+        <p class="empty">No hay turnos para hoy.</p>
+      }
+    </div>
+  </div>
+
+  <!-- Pendientes -->
+  @if (pendingAppointments().length > 0) {
+    <div class="dash-section card pending-section">
+      <div class="section-title">
+        <h3>Pendientes de confirmar</h3>
+        <span class="badge warning">{{ pendingAppointments().length }}</span>
+      </div>
+      @if (actionError()) {
+        <p class="pending-error">{{ actionError() }}</p>
+      }
+      <div class="appt-table">
+        <div class="appt-row appt-head">
+          <span>Cliente</span><span>Barbero</span><span>Servicio</span><span>Fecha</span><span>Hora</span><span>Acciones</span>
+        </div>
+        @for (a of pendingAppointments(); track a.id) {
+          <div class="appt-row">
+            <span class="client-name">{{ a.clientName }}</span>
+            <span>{{ a.barberName }}</span>
+            <span>{{ a.serviceName }}</span>
+            <span>{{ a.date }}</span>
+            <span>{{ a.time }}</span>
+            <span class="pending-actions">
+              <button
+                class="action-btn confirm"
+                [disabled]="isSaving(a.id)"
+                (click)="setStatus(a, 'confirmado')"
+              >Confirmar</button>
+              <button
+                class="action-btn cancel"
+                [disabled]="isSaving(a.id)"
+                (click)="setStatus(a, 'cancelado')"
+              >Cancelar</button>
+            </span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Ingresos por mes -->
+  <div class="dash-section card">
+    <div class="section-title">
+      <h3>Ingresos por mes</h3>
+    </div>
+    <div class="chart-bars">
+      @for (m of data.monthlyRevenue(); track m.month) {
+        <div class="chart-col">
+          <div class="bar" [style.height.%]="(m.total / maxMonthly()) * 100"></div>
+          <span class="month">{{ m.month }}</span>
+          <span class="amount">{{ formatPrice(m.total) }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</div>

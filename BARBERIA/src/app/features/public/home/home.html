@@ -1,0 +1,186 @@
+<!-- ============ HERO ============ -->
+<section class="hero" id="inicio">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="hero-overlay"></div>
+
+  <div class="container hero-content fade-in-up">
+    <span class="kicker">Corte · Barba · Estilo</span>
+    <h1>Tu Estilo,<br /><em>Mi Enfoque</em></h1>
+    <p class="hero-text">
+      Más que un corte, es confianza. Un espacio exclusivo diseñado
+      para el caballero contemporáneo que busca perfección en Yopal, Casanare.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary btn-glow" routerLink="/reservar">Reservar Turno</a>
+      <a class="btn btn-ghost" routerLink="/" fragment="servicios">Ver Servicios →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICIOS ============ -->
+<section class="section services-section" id="servicios">
+  <div class="container">
+    <div class="section-head fade-in-up">
+      <span class="kicker">Estudio 4-4-4 Barber</span>
+      <h2>Nuestros Servicios</h2>
+      <p>Elige el servicio que mejor se adapte a tu estilo.</p>
+    </div>
+
+    <div class="services-grid">
+      @for (service of services(); track service.id; let i = $index) {
+        <div class="service-card card card-hover fade-in-up" [class]="'stagger-' + (i + 1)">
+          <span class="service-icon">{{ service.icon }}</span>
+          <h3>{{ service.name }}</h3>
+          <p class="service-desc">{{ service.description }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ============ SOBRE NUESTRA BARBERÍA ============ -->
+<section class="section about-section" id="nosotros">
+  <div class="container about-grid">
+    <div class="about-tabs fade-in-up">
+      <span class="kicker">Estudio 4-4-4 Barber</span>
+      <h2>Sobre Nuestro Estudio</h2>
+
+      <ul class="tab-list">
+        <li [class.active]="aboutTab() === 'historia'" (click)="setAboutTab('historia')">Historia</li>
+        <li [class.active]="aboutTab() === 'barberos'" (click)="setAboutTab('barberos')">Barberos</li>
+        <li [class.active]="aboutTab() === 'ubicacion'" (click)="setAboutTab('ubicacion')">Ubicación</li>
+        <li [class.active]="aboutTab() === 'pagos'" (click)="setAboutTab('pagos')">Formas de Pago</li>
+      </ul>
+    </div>
+
+    <div class="about-panel fade-in">
+      @switch (aboutTab()) {
+        @case ('historia') {
+          <p class="about-copy">
+            <b>Estudio 4-4-4 Barber</b> está en Yopal, Casanare, con una idea sencilla:
+            que cortarte el cabello sea un momento para ti y no un trámite. Aquí cada
+            servicio se piensa contigo, con calma y con atención al detalle.
+          </p>
+          <p class="about-copy about-copy-2">
+            Trabajamos <b>cortes clásicos y modernos, degradados, perfilado de barba,
+            afeitado con navaja y limpieza facial</b>, en un espacio cómodo y con la hora
+            que tú eliges desde tu celular.
+          </p>
+
+          <ul class="pillars">
+            <li>
+              <span class="pillar-icon" aria-hidden="true">✂️</span>
+              <div>
+                <strong>Atención al detalle</strong>
+                <p>Líneas limpias, contornos precisos y un acabado que se nota.</p>
+              </div>
+            </li>
+            <li>
+              <span class="pillar-icon" aria-hidden="true">💬</span>
+              <div>
+                <strong>Tu estilo, primero</strong>
+                <p>Antes de empezar conversamos qué buscas, para que salgas como lo imaginaste.</p>
+              </div>
+            </li>
+            <li>
+              <span class="pillar-icon" aria-hidden="true">📅</span>
+              <div>
+                <strong>Tu hora, reservada</strong>
+                <p>Reserva en menos de un minuto y asegura tu turno con una seña en línea.</p>
+              </div>
+            </li>
+          </ul>
+
+          <blockquote class="about-quote">Más que un corte, es confianza.</blockquote>
+        }
+        @case ('barberos') {
+          <div class="barbers-grid">
+            @for (barber of barbers(); track barber.id) {
+              <article class="barber-card">
+                <div class="barber-photo-wrap">
+                  <img class="barber-photo" [src]="barber.photo" [alt]="'Foto de ' + barber.name" width="440" height="440" loading="lazy" />
+                </div>
+                <div class="barber-info">
+                  <h4>{{ barber.name }}</h4>
+                  <span class="barber-role">{{ barber.role }}</span>
+                  <p>{{ barber.bio }}</p>
+                  <ul class="barber-tags">
+                    <li>Degradados</li>
+                    <li>Cortes clásicos</li>
+                    <li>Perfilado de barba</li>
+                  </ul>
+                  <a class="btn btn-primary btn-sm" routerLink="/reservar">Reservar con {{ barber.name.split(' ')[0] }}</a>
+                </div>
+              </article>
+            }
+          </div>
+        }
+        @case ('ubicacion') {
+          <p class="about-copy">
+            Nos encuentras en <b>Yopal, Casanare</b>. Atendemos de <b>lunes a sábado,
+            de 9:00 a. m. a 7:00 p. m.</b> (domingos cerrado). Para reservar tu hora no
+            necesitas llamar: hazlo desde la página.
+          </p>
+          <div class="map-container">
+            <iframe
+              title="Mapa de Yopal, Casanare"
+              src="https://www.google.com/maps?q=Yopal,+Casanare,+Colombia&output=embed"
+              width="100%"
+              height="280"
+              style="border:0; border-radius: 8px; margin-top: 16px;"
+              allowfullscreen
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+          <a class="btn btn-outline btn-sm" href="https://www.google.com/maps/search/?api=1&query=Yopal+Casanare+Colombia" target="_blank" rel="noopener" style="margin-top: 14px; display: inline-flex;">
+            Cómo llegar →
+          </a>
+        }
+        @case ('pagos') {
+          <p class="about-copy">
+            Puedes <b>pagar en el local</b> el día de tu visita, o asegurar tu hora con una
+            <b>seña en línea</b> (PSE, tarjeta de débito/crédito, Nequi o Bancolombia) y pagar
+            el resto en el local.
+          </p>
+        }
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="section faq-section" id="preguntas">
+  <div class="container">
+    <div class="section-head fade-in-up">
+      <span class="kicker">Ayuda</span>
+      <h2>Preguntas Frecuentes</h2>
+      <p>Todo lo que necesitas saber antes de tu visita.</p>
+    </div>
+
+    <div class="faq-list">
+      @for (faq of faqs(); track faq.question; let i = $index) {
+        <div class="faq-item fade-in-up" [class.open]="openFaqIndex() === i" [class]="'stagger-' + (i + 1)">
+          <button class="faq-question" (click)="toggleFaq(i)">
+            <span>{{ faq.question }}</span>
+            <span class="faq-icon">{{ openFaqIndex() === i ? '−' : '+' }}</span>
+          </button>
+          <div class="faq-answer-wrapper" [class.open]="openFaqIndex() === i">
+            <p class="faq-answer">{{ faq.answer }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA FINAL ============ -->
+<section class="cta-band">
+  <div class="container cta-inner fade-in-up">
+    <div>
+      <h2>¿Listo para tu próximo corte?</h2>
+      <p>Reserva tu turno en menos de un minuto. Tu estilo, mi enfoque.</p>
+    </div>
+    <a class="btn btn-primary btn-glow" routerLink="/reservar">Reservar Turno →</a>
+  </div>
+</section>

@@ -1,0 +1,46 @@
+<div class="admin-shell">
+  <aside class="sidebar" [class.open]="menuOpen()">
+    <a class="brand" routerLink="/">
+      <span class="brand-mark">4-4-4</span>
+      <span class="brand-text">Estudio <em>4-4-4 Barber</em></span>
+    </a>
+
+    <nav class="side-nav">
+      <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <span class="ico">◧</span> Resumen
+      </a>
+      <a routerLink="/admin/turnos" routerLinkActive="active">
+        <span class="ico">🗓</span> Turnos
+      </a>
+      <a routerLink="/admin/finanzas" routerLinkActive="active">
+        <span class="ico">💰</span> Finanzas
+      </a>
+    </nav>
+
+    <div class="side-footer">
+      <a routerLink="/" class="view-site">← Ver sitio público</a>
+    </div>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="burger" (click)="toggleMenu()" aria-label="Menú">☰</button>
+      <span class="topbar-title">Panel de Administración</span>
+      <div class="topbar-user">
+        <div class="avatar">{{ barberName.charAt(0) }}</div>
+        <div class="user-info">
+          <strong>{{ barberName }}</strong>
+          <span>Administrador</span>
+        </div>
+        <button class="btn btn-outline btn-sm" (click)="logout()">Salir</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      @if (data.appointmentsError()) {
+        <p class="conn-error">No se pudo conectar con el servidor de citas. Mostrando lo último que se cargó; reintentando…</p>
+      }
+      <router-outlet />
+    </main>
+  </div>
+</div>

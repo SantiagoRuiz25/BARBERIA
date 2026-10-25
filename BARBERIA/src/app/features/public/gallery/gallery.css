@@ -1,0 +1,109 @@
+.gallery-page { min-height: 70vh; }
+
+.viewer {
+  position: relative;
+  max-width: 520px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.viewer-image {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-md);
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--color-border-soft);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.viewer-image:hover {
+  transform: scale(1.01);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+.nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(10,10,11,0.7);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: 1.5rem;
+  display: grid;
+  place-items: center;
+  z-index: 3;
+  transition: all 0.3s ease;
+}
+.nav-btn:hover {
+  border-color: var(--color-gold);
+  color: var(--color-gold-light);
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 0 15px rgba(255, 184, 0, 0.25);
+}
+.nav-btn.prev { left: -8px; }
+.nav-btn.next { right: -8px; }
+
+.counter {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  background: rgba(10,10,11,0.7);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
+  color: var(--color-text-soft);
+}
+
+.thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 32px;
+}
+.thumb {
+  width: 62px; height: 62px;
+  border-radius: var(--radius-sm);
+  background-size: cover;
+  background-position: center;
+  border: 2px solid transparent;
+  opacity: 0.55;
+  transition: all 0.3s ease;
+}
+.thumb:hover {
+  opacity: 0.85;
+  transform: scale(1.08);
+}
+.thumb.active {
+  opacity: 1;
+  border-color: var(--color-gold);
+  box-shadow: 0 0 10px rgba(255, 184, 0, 0.3);
+}
+
+.gallery-cta {
+  text-align: center;
+  margin-top: 56px;
+  padding-top: 44px;
+  border-top: 1px solid var(--color-border-soft);
+}
+.gallery-cta p { color: var(--color-text-soft); margin-bottom: 18px; }
+
+/* Button glow reutilizado */
+.btn-glow {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.btn-glow:hover {
+  box-shadow: 0 0 25px rgba(255, 184, 0, 0.4);
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 560px) {
+  .nav-btn.prev { left: 4px; }
+  .nav-btn.next { right: 4px; }
+}

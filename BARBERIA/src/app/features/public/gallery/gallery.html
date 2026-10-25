@@ -1,0 +1,36 @@
+<section class="section gallery-page">
+  <div class="container">
+    <div class="section-head fade-in-up">
+      <span class="kicker">Estudio 4-4-4 Barber</span>
+      <h2>Galería</h2>
+      <p>Explorá nuestros cortes, el ambiente y la experiencia única que ofrecemos en Estudio 4-4-4 Barber.</p>
+    </div>
+
+    <div class="viewer scale-in">
+      <button class="nav-btn prev" (click)="prev()" aria-label="Anterior">‹</button>
+
+      <div class="viewer-image" [style.background-image]="'url(' + active().url + ')'"></div>
+
+      <button class="nav-btn next" (click)="next()" aria-label="Siguiente">›</button>
+
+      <span class="counter">{{ activeIndex() + 1 }} / {{ images().length }}</span>
+    </div>
+
+    <div class="thumbs">
+      @for (img of images(); track img.id; let i = $index) {
+        <button
+          class="thumb fade-in-up"
+          [class.active]="i === activeIndex()"
+          [style.background-image]="'url(' + img.url + ')'"
+          (click)="select(i)"
+          [attr.aria-label]="'Ver imagen ' + (i + 1)"
+        ></button>
+      }
+    </div>
+
+    <div class="gallery-cta fade-in-up">
+      <p>¿Te gustó lo que viste? Reserva tu turno y viví la experiencia.</p>
+      <a class="btn btn-primary btn-glow" routerLink="/reservar">Reservar Turno</a>
+    </div>
+  </div>
+</section>

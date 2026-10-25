@@ -1,0 +1,59 @@
+<div class="appt-page">
+  <div class="dash-head">
+    <h2>Turnos</h2>
+    <p>Todas las reservas realizadas por tus clientes.</p>
+  </div>
+
+  <div class="filters">
+    <button [class.active]="filter() === 'todos'" (click)="setFilter('todos')">Todos ({{ all().length }})</button>
+    <button [class.active]="filter() === 'confirmado'" (click)="setFilter('confirmado')">Confirmados</button>
+    <button [class.active]="filter() === 'pendiente'" (click)="setFilter('pendiente')">Pendientes</button>
+    <button [class.active]="filter() === 'cancelado'" (click)="setFilter('cancelado')">Cancelados</button>
+  </div>
+
+  @if (error()) {
+    <p class="table-error">{{ error() }}</p>
+  }
+
+  <div class="card table-card">
+    <div class="appt-row appt-head">
+      <span>Cliente</span><span>Barbero</span><span>Servicio</span><span>Fecha</span><span>Hora</span><span>Precio</span><span>Estado</span><span>Pago</span><span>Acciones</span>
+    </div>
+    @for (a of filtered(); track a.id) {
+      <div class="appt-row">
+        <span>{{ a.clientName }}</span>
+        <span>{{ a.barberName }}</span>
+        <span>{{ a.serviceName }}</span>
+        <span>{{ a.date }}</span>
+        <span>{{ a.time }}</span>
+        <span>{{ formatPrice(a.price) }}</span>
+        <span class="status" [class]="a.status">{{ a.status }}</span>
+        <span class="pay" [class]="'pay ' + (a.needsRefund ? 'refund' : a.paymentStatus)">{{ paymentLabel(a) }}</span>
+        <span class="actions">
+          @if (a.paymentStatus === 'pendiente_local' && a.status !== 'cancelado') {
+            <button class="action-btn paid" [disabled]="isSaving(a.id)" (click)="markPaid(a)">Cobrado</button>
+          }
+          @if (a.status !== 'confirmado') {
+            <button
+              class="action-btn confirm"
+              [disabled]="isSaving(a.id)"
+              (click)="setStatus(a, 'confirmado')"
+            >Confirmar</button>
+          }
+          @if (a.status !== 'cancelado') {
+            <button
+              class="action-btn cancel"
+              [disabled]="isSaving(a.id)"
+              (click)="setStatus(a, 'cancelado')"
+            >Cancelar</button>
+          }
+          @if (a.status === 'cancelado') {
+            <button class="action-btn cancel" [disabled]="isSaving(a.id)" (click)="remove(a)">Eliminar</button>
+          }
+        </span>
+      </div>
+    } @empty {
+      <p class="empty">No hay turnos con este filtro.</p>
+    }
+  </div>
+</div>

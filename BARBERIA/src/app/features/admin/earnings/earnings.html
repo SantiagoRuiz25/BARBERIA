@@ -1,0 +1,34 @@
+<div class="earnings-page">
+  <div class="dash-head">
+    <h2>Finanzas</h2>
+    <p>Evolución de tus ingresos mensuales.</p>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card card">
+      <span class="kpi-label">Ingresos (6 meses)</span>
+      <strong class="kpi-value gold">{{ formatPrice(totalYear()) }}</strong>
+    </div>
+    <div class="kpi-card card">
+      <span class="kpi-label">Ticket promedio</span>
+      <strong class="kpi-value">{{ formatPrice(avgTicket()) }}</strong>
+    </div>
+    <div class="kpi-card card">
+      <span class="kpi-label">Turnos registrados</span>
+      <strong class="kpi-value">{{ appointments().length }}</strong>
+    </div>
+  </div>
+
+  <div class="card chart-card">
+    <h3>Ingresos por mes</h3>
+    <div class="chart">
+      @for (r of revenue(); track r.month) {
+        <div class="bar-col">
+          <span class="bar-value">{{ formatPrice(r.total) }}</span>
+          <div class="bar" [style.height.%]="barHeight(r.total)"></div>
+          <span class="bar-label">{{ r.month }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</div>

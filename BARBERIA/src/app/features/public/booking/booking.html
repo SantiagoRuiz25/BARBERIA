@@ -1,0 +1,323 @@
+<section class="section booking-page">
+  <div class="container">
+
+    @if (!confirmed()) {
+      <div class="section-head fade-in-up">
+        <span class="kicker">Estudio 4-4-4 Barber</span>
+        <h2>Reserva tu Turno</h2>
+        <p>Verificá la disponibilidad en tiempo real y confirmá en pocos pasos.</p>
+      </div>
+
+      <!-- Stepper -->
+      <div class="stepper fade-in-up">
+        <div class="step" [class.active]="step() === 1" [class.done]="step() > 1" (click)="goToStep(1)">
+          <span class="step-num">01</span><span class="step-label">Profesional</span>
+        </div>
+        <div class="step-line" [class.filled]="step() > 1"></div>
+        <div class="step" [class.active]="step() === 2" [class.done]="step() > 2" (click)="goToStep(2)">
+          <span class="step-num">02</span><span class="step-label">Servicio</span>
+        </div>
+        <div class="step-line" [class.filled]="step() > 2"></div>
+        <div class="step" [class.active]="step() === 3" [class.done]="step() > 3" (click)="goToStep(3)">
+          <span class="step-num">03</span><span class="step-label">Horario</span>
+        </div>
+        <div class="step-line" [class.filled]="step() > 3"></div>
+        <div class="step" [class.active]="step() === 4">
+          <span class="step-num">04</span><span class="step-label">Confirmar</span>
+        </div>
+      </div>
+
+      <!-- STEP 1: PROFESIONAL -->
+      @if (step() === 1) {
+        <div class="step-panel slide-in-right">
+          <h3 class="step-title">Elige a tu <span class="gold">Barbero</span></h3>
+          <p class="step-sub">Selecciona el profesional con el que deseás atenderte.</p>
+
+          <div class="barbers-select-grid">
+            @for (barber of barbers(); track barber.id; let i = $index) {
+              <div class="barber-select-card card-hover fade-in-up" [class.selected]="selectedBarber()?.id === barber.id" [class]="'stagger-' + (i + 1)">
+                <div class="photo" [style.background-image]="'url(' + barber.photo + ')'"></div>
+                <span class="tag">{{ barber.role }}</span>
+                <h4>{{ barber.name }}</h4>
+                <button class="btn btn-primary btn-sm btn-block btn-glow" (click)="selectBarber(barber)">
+                  Seleccionar →
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- STEP 2: SERVICIO -->
+      @if (step() === 2) {
+        <div class="step-panel slide-in-right">
+          <h3 class="step-title">Elige el <span class="gold">Servicio</span></h3>
+          <p class="step-sub">Cada servicio tiene una duración diferente.</p>
+
+          <div class="services-select-grid">
+            @for (service of services(); track service.id; let i = $index) {
+              <button
+                class="service-select-card fade-in-up"
+                [class.selected]="selectedService()?.id === service.id"
+                (click)="selectService(service)"
+                [class]="'stagger-' + (i + 1)"
+              >
+                <span class="check">{{ selectedService()?.id === service.id ? '✓' : '' }}</span>
+                <span class="svc-icon">{{ service.icon }}</span>
+                <div class="svc-info">
+                  <h4>{{ service.name }}</h4>
+                  <p>{{ service.description }}</p>
+                </div>
+                <div class="svc-price">
+                  <span class="price">{{ formatPrice(service.price) }}</span>
+                  <span class="duration">{{ service.durationMin }} min</span>
+                </div>
+              </button>
+            }
+          </div>
+
+          <div class="selection-bar">
+            <div class="selection-info">
+              <span class="label">Selección</span>
+              <strong>{{ selectedService() ? selectedService()!.name + ' · ' + selectedService()!.durationMin + ' min' : 'Sin elegir' }}</strong>
+            </div>
+            <button class="btn btn-primary btn-glow" [disabled]="!selectedService()" (click)="continueToSchedule()">Continuar →</button>
+          </div>
+        </div>
+      }
+
+      <!-- STEP 3: HORARIO -->
+      @if (step() === 3) {
+        <div class="step-panel slide-in-right">
+          <h3 class="step-title">Selecciona tu <span class="gold">Horario</span></h3>
+          <p class="step-sub">Verificá la disponibilidad en tiempo real.</p>
+
+          <div class="schedule-grid">
+            <div class="schedule-left card">
+              <div class="pro-mini">
+                <div class="photo" [style.background-image]="'url(' + selectedBarber()?.photo + ')'"></div>
+                <div>
+                  <strong>{{ selectedBarber()?.name }}</strong>
+                  <span>{{ selectedService()?.name }}</span>
+                </div>
+              </div>
+
+              <div class="calendar">
+                <div class="calendar-head">
+                  <button (click)="prevMonth()" aria-label="Mes anterior">‹</button>
+                  <span>{{ monthLabel() }}</span>
+                  <button (click)="nextMonth()" aria-label="Mes siguiente">›</button>
+                </div>
+                <div class="calendar-dow">
+                  <span>Lu</span><span>Ma</span><span>Mi</span><span>Ju</span><span>Vi</span><span>Sa</span><span>Do</span>
+                </div>
+                <div class="calendar-grid">
+                  @for (day of calendarDays(); track day.date.getTime()) {
+                    <button
+                      class="cal-day"
+                      [class.out]="!day.inMonth"
+                      [class.disabled]="day.past || day.closed"
+                      [class.selected]="selectedDate()?.toDateString() === day.date.toDateString()"
+                      [disabled]="day.past || day.closed"
+                      (click)="selectDate(day)"
+                    >{{ day.date.getDate() }}</button>
+                  }
+                </div>
+                <div class="calendar-legend">
+                  <span><i class="dot avail"></i> Disponible</span>
+                  <span><i class="dot busy"></i> Cerrado</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="schedule-right card">
+              <div class="avail-head">
+                <h4>Disponibilidad</h4>
+                <span class="gold">{{ selectedDate() ? formatSelectedDate() : 'Elige una fecha' }}</span>
+              </div>
+
+              @if (selectedDate()) {
+                <div class="slots-grid">
+                  @for (slot of availability(); track slot.time) {
+                    <button
+                      class="slot"
+                      [class.selected]="selectedTime() === slot.time"
+                      [class.disabled]="!slot.available"
+                      [disabled]="!slot.available"
+                      (click)="selectTime(slot)"
+                    >{{ slot.time }}</button>
+                  }
+                </div>
+                @if (slotsLoading()) {
+                  <p class="empty-hint">Cargando horarios disponibles…</p>
+                }
+                @if (slotsError()) {
+                  <p class="booking-error">No pudimos cargar los horarios. Revisa tu conexión e intenta elegir la fecha otra vez.</p>
+                }
+                @if (bookingError()) {
+                  <p class="booking-error">{{ bookingError() }}</p>
+                }
+              } @else {
+                <p class="empty-hint">Selecciona una fecha en el calendario para ver los horarios disponibles.</p>
+              }
+
+              <div class="selection-summary">
+                <span class="label">Tu selección</span>
+                <strong>{{ selectedDate() ? formatSelectedDate() + (selectedTime() ? ' · ' + selectedTime() : '') : '—' }}</strong>
+              </div>
+              <button class="btn btn-primary btn-block btn-glow" [disabled]="!selectedDate() || !selectedTime()" (click)="continueToConfirm()">
+                Continuar →
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- STEP 4: CONFIRMAR / CHECKOUT -->
+      @if (step() === 4) {
+        <div class="step-panel slide-in-right">
+          <div class="checkout-grid">
+            <div class="checkout-form card">
+              <div class="secure-badge">🔒 Conexión Segura</div>
+              <h3 class="checkout-title">Checkout <span class="gold">Premium</span></h3>
+
+              <label class="field">
+                <span>Nombre y Apellido</span>
+                <input type="text" placeholder="Tu nombre completo" [ngModel]="clientName()" (ngModelChange)="clientName.set($event)" />
+              </label>
+
+              <label class="field">
+                <span>WhatsApp (con código de país)</span>
+                <input type="tel" placeholder="57 316 503 3984" [ngModel]="clientWhatsapp()" (ngModelChange)="clientWhatsapp.set($event)" />
+                <span class="field-hint">Recibirás tu código de reserva por WhatsApp</span>
+              </label>
+
+              <label class="field">
+                <span>Email de confirmación</span>
+                <input type="email" placeholder="tu@email.com" [ngModel]="clientEmail()" (ngModelChange)="clientEmail.set($event)" />
+              </label>
+
+              <span class="field-label">Método de Pago</span>
+              <div class="payment-options" role="radiogroup" aria-label="Método de pago">
+                @if (onlineAvailable()) {
+                  <button type="button" class="pay-opt" role="radio" [attr.aria-checked]="paymentMethod() === 'wompi'" [class.selected]="paymentMethod() === 'wompi'" (click)="setPayment('wompi')">
+                    <span class="pay-icon">💳</span>
+                    <div>
+                      <strong>Pagar la seña en línea</strong>
+                      <small>PSE, tarjeta, Nequi o Bancolombia · pago seguro con Wompi</small>
+                    </div>
+                    <span class="radio"></span>
+                  </button>
+                } @else if (config()) {
+                  <p class="payment-note">El pago en línea no está disponible por ahora. Puedes reservar y pagar en el local.</p>
+                }
+
+                <button type="button" class="pay-opt" role="radio" [attr.aria-checked]="paymentMethod() === 'efectivo'" [class.selected]="paymentMethod() === 'efectivo'" (click)="setPayment('efectivo')">
+                  <span class="pay-icon">💵</span>
+                  <div>
+                    <strong>Pagar en el local</strong>
+                    <small>Abonas el total el día del turno</small>
+                  </div>
+                  <span class="radio"></span>
+                </button>
+              </div>
+
+              <div class="price-split">
+                <div>
+                  <span class="label">Seña ({{ config()?.depositPercent ?? 50 }}%)</span>
+                  <strong>{{ formatPrice(depositAmount()) }}</strong>
+                </div>
+                <div>
+                  <span class="label">Pago total</span>
+                  <strong>{{ formatPrice(selectedService()?.price ?? 0) }}</strong>
+                </div>
+              </div>
+
+              <label class="terms">
+                <input type="checkbox" [ngModel]="acceptedTerms()" (ngModelChange)="acceptedTerms.set($event)" />
+                <span>Al confirmar, aceptas los Términos y Condiciones y entiendes que el pago en línea se realiza en concepto de seña. La cancelación con menos de 24 horas implica la pérdida de la misma.</span>
+              </label>
+
+              <button class="btn btn-primary btn-block btn-glow" [disabled]="!canConfirm() || loading()" (click)="confirmBooking()">
+                @if (loading()) {
+                  <span class="spinner"></span> Procesando...
+                } @else {
+                  @if (paymentMethod() === 'wompi') { Pagar seña {{ formatPrice(depositAmount()) }} → } @else { Confirmar Reserva → }
+                }
+              </button>
+
+              @if (bookingError()) {
+                <p class="booking-error">{{ bookingError() }}</p>
+              }
+
+              @if (paymentMethod() === 'wompi') {
+                <p class="payment-note">Te llevaremos a la página segura de Wompi. Tu hora queda retenida {{ config()?.holdMinutes ?? 15 }} minutos mientras pagas.@if (config()?.sandbox) { <strong> Modo de pruebas: no se cobra dinero real.</strong> }</p>
+              }
+            </div>
+
+            <div class="checkout-summary card">
+              <div class="summary-pro">
+                <div class="photo" [style.background-image]="'url(' + selectedBarber()?.photo + ')'"></div>
+                <div>
+                  <strong>{{ selectedService()?.name }}</strong>
+                  <span>con {{ selectedBarber()?.name }}</span>
+                </div>
+              </div>
+              <div class="summary-row">
+                <span>📅 Fecha</span>
+                <strong>{{ formatSelectedDate() }}</strong>
+              </div>
+              <div class="summary-row">
+                <span>🕒 Hora</span>
+                <strong>{{ selectedTime() }} hs</strong>
+              </div>
+              <div class="summary-row divider"></div>
+              <div class="summary-row">
+                <span>Valor del servicio</span>
+                <strong>{{ formatPrice(selectedService()?.price ?? 0) }}</strong>
+              </div>
+              <div class="summary-row gold-row">
+                <span>Pagas ahora</span>
+                <strong>{{ formatPrice(payNow()) }}</strong>
+              </div>
+              <div class="summary-row muted-row">
+                <span>Pagas en el local</span>
+                <strong>{{ formatPrice((selectedService()?.price ?? 0) - payNow()) }}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    } @else {
+      <!-- CONFIRMACIÓN -->
+      <div class="success-screen scale-in">
+        <div class="success-icon">✓</div>
+        <h2>¡Turno confirmado!</h2>
+        <p>Guarda tu código de reserva:</p>
+        <div class="booking-code">{{ bookingCode() }}</div>
+
+        <div class="success-summary card">
+          <div class="summary-row"><span>Barbero</span><strong>{{ selectedBarber()?.name }}</strong></div>
+          <div class="summary-row"><span>Servicio</span><strong>{{ selectedService()?.name }}</strong></div>
+          <div class="summary-row"><span>Fecha</span><strong>{{ formatSelectedDate() }}</strong></div>
+          <div class="summary-row"><span>Hora</span><strong>{{ selectedTime() }} hs</strong></div>
+          <div class="summary-row divider"></div>
+          <div class="summary-row"><span>Pago</span><strong>En el local</strong></div>
+          <div class="summary-row gold-row"><span>Total a pagar en el local</span><strong>{{ formatPrice(selectedService()?.price ?? 0) }}</strong></div>
+        </div>
+
+        <div class="success-actions">
+          <button class="btn btn-whatsapp" (click)="resendWhatsApp()">
+            @if (whatsappSent()) {
+              ✓ Mensaje enviado
+            } @else {
+              📱 Enviar confirmación por WhatsApp
+            }
+          </button>
+
+          <a class="btn btn-primary btn-glow" routerLink="/">Volver al Inicio</a>
+        </div>
+      </div>
+    }
+  </div>
+</section>

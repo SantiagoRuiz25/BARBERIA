@@ -1,0 +1,24 @@
+<header class="site-header" [class.scrolled]="scrolled()">
+  <div class="container bar">
+    <a class="brand" routerLink="/" (click)="closeMenu()">
+      <span class="brand-mark">4-4-4</span>
+      <span class="brand-text">Estudio <em>4-4-4 Barber</em></span>
+    </a>
+
+    <nav class="nav-links" [class.open]="menuOpen()">
+      <a routerLink="/" fragment="inicio" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">Inicio</a>
+      <a routerLink="/galeria" routerLinkActive="active" (click)="closeMenu()">Galería</a>
+      <a routerLink="/" fragment="servicios" (click)="closeMenu()">Servicios</a>
+      <a routerLink="/reservar" routerLinkActive="active" (click)="closeMenu()">Reservar</a>
+      <a routerLink="/" fragment="contacto" (click)="closeMenu()">Contacto</a>
+      <a class="mobile-only" routerLink="/admin" (click)="closeMenu()">Panel</a>
+    </nav>
+
+    <div class="actions">
+      <a class="btn btn-primary btn-sm" routerLink="/reservar">Reservar Turno</a>
+      <button class="burger" (click)="toggleMenu()" [class.active]="menuOpen()" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>

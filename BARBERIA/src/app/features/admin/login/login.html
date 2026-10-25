@@ -1,0 +1,52 @@
+<div class="login-screen">
+  <div class="login-card card">
+    <a class="brand" routerLink="/">
+      <span class="brand-mark">4-4-4</span>
+      <span class="brand-text">Estudio <em>4-4-4 Barber</em></span>
+    </a>
+
+    <div class="login-icon">🔒</div>
+    <h2>Panel del Barbero</h2>
+    <p class="sub">Acceso exclusivo para administrar tu negocio.</p>
+
+    <label class="field">
+      <span>Correo electrónico</span>
+      <input
+        type="email"
+        placeholder="tu@barberia444.com"
+        [ngModel]="email()"
+        (ngModelChange)="email.set($event)"
+        (keyup.enter)="submit()"
+      />
+    </label>
+
+    <label class="field">
+      <span>Contraseña</span>
+      <input
+        type="password"
+        placeholder="••••••••"
+        [ngModel]="pass()"
+        (ngModelChange)="pass.set($event)"
+        (keyup.enter)="submit()"
+      />
+    </label>
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+
+    <button class="btn btn-primary btn-block" (click)="submit()" [disabled]="loading()">
+      @if (loading()) {
+        <span class="spinner"></span> Verificando...
+      } @else {
+        Ingresar al Panel
+      }
+    </button>
+
+    <div class="login-help">
+      <p>Solo el barbero autorizado puede acceder.</p>
+    </div>
+
+    <a class="back-link" routerLink="/">← Volver al sitio</a>
+  </div>
+</div>

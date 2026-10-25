@@ -1,0 +1,156 @@
+<section class="auth-page">
+  <div class="auth-card card scale-in">
+
+    <!-- PASO 1: ELEGIR MÉTODO -->
+    @if (step() === 'choose') {
+      <div class="auth-header">
+        <span class="brand-mark">4-4-4</span>
+        <h1>¡Regístrate!</h1>
+        <p class="sub">Es muy fácil y es gratis</p>
+      </div>
+
+      <div class="auth-methods">
+        <button class="auth-btn auth-phone" (click)="selectMethod('phone')">
+          📱 Continuar con número celular
+        </button>
+
+        <button class="auth-btn auth-apple" (click)="auth.loginWithApple()">
+           Continuar con Apple
+        </button>
+
+        <button class="auth-btn auth-email" (click)="selectMethod('email')">
+          ✉️ Continuar con correo
+        </button>
+      </div>
+
+      <p class="terms-text">
+        Al continuar aceptas los <a href="javascript:void(0)">términos y condiciones</a> y
+        la <a href="javascript:void(0)">política de privacidad</a> y tratamiento de datos.
+      </p>
+
+      <div class="auth-footer">
+        <span class="brand-name">Estudio 4-4-4 Barber</span>
+        <span class="brand-slogan">Tu estilo, mi enfoque</span>
+      </div>
+    }
+
+    <!-- PASO 2: INGRESAR CELULAR -->
+    @if (step() === 'enter' && selectedMethod() === 'phone') {
+      <div class="auth-header">
+        <span class="brand-mark">4-4-4</span>
+        <h1>Tu número</h1>
+        <p class="sub">Ingresa tu número de celular con código de país</p>
+      </div>
+
+      <div class="auth-input-group">
+        <label class="field">
+          <span>Número de celular</span>
+          <input
+            type="tel"
+            placeholder="Ej: 316 503 3984"
+            [ngModel]="phoneInput()"
+            (ngModelChange)="phoneInput.set($event)"
+            (keyup.enter)="sendCode()"
+            autofocus
+          />
+        </label>
+      </div>
+
+      @if (error()) {
+        <p class="error-msg">{{ error() }}</p>
+      }
+
+      <button class="auth-btn auth-primary" (click)="sendCode()" [disabled]="loading()">
+        @if (loading()) {
+          <span class="spinner"></span> Enviando código...
+        } @else {
+          Enviar código por WhatsApp →
+        }
+      </button>
+
+      <button class="back-btn" (click)="goBack()">← Volver</button>
+    }
+
+    <!-- PASO 2: INGRESAR CORREO -->
+    @if (step() === 'enter' && selectedMethod() === 'email') {
+      <div class="auth-header">
+        <span class="brand-mark">4-4-4</span>
+        <h1>Tu correo</h1>
+        <p class="sub">Te enviaremos un código de verificación a tu correo</p>
+      </div>
+
+      <div class="auth-input-group">
+        <label class="field">
+          <span>Correo electrónico</span>
+          <input
+            type="email"
+            placeholder="Ej: correo@ejemplo.com"
+            [ngModel]="emailInput()"
+            (ngModelChange)="emailInput.set($event)"
+            (keyup.enter)="sendCode()"
+            autofocus
+          />
+        </label>
+      </div>
+
+      @if (error()) {
+        <p class="error-msg">{{ error() }}</p>
+      }
+
+      <button class="auth-btn auth-primary" (click)="sendCode()" [disabled]="loading()">
+        @if (loading()) {
+          <span class="spinner"></span> Enviando código...
+        } @else {
+          Enviar código por correo →
+        }
+      </button>
+
+      <button class="back-btn" (click)="goBack()">← Volver</button>
+    }
+
+    <!-- PASO 3: VERIFICAR CÓDIGO -->
+    @if (step() === 'verify') {
+      <div class="auth-header">
+        <span class="brand-mark">4-4-4</span>
+        <h1>Verificá tu código</h1>
+        <p class="sub">
+          @if (selectedMethod() === 'phone') {
+            Enviamos un código de 6 dígitos a tu WhatsApp
+          } @else {
+            Enviamos un código de 6 dígitos a tu correo
+          }
+        </p>
+        <p class="target">{{ target() }}</p>
+      </div>
+
+      <div class="code-input-group">
+        <input
+          type="text"
+          inputmode="numeric"
+          maxlength="6"
+          placeholder="000000"
+          class="code-input"
+          [ngModel]="verificationInput()"
+          (ngModelChange)="verificationInput.set($event)"
+          (keyup.enter)="verifyCode()"
+          autofocus
+        />
+      </div>
+
+      @if (error()) {
+        <p class="error-msg">{{ error() }}</p>
+      }
+
+      <button class="auth-btn auth-primary" (click)="verifyCode()" [disabled]="loading()">
+        @if (loading()) {
+          <span class="spinner"></span> Verificando...
+        } @else {
+          Verificar código →
+        }
+      </button>
+
+      <button class="back-btn" (click)="goBack()">← Volver a elegir método</button>
+    }
+
+  </div>
+</section>

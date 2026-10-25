@@ -1,0 +1,6 @@
+# Configuración de Railway: así no tienes que escribir los comandos en el panel.
+[build]
+buildCommand = "npm install && npm run build"
+
+[deploy]
+startCommand = "npm run api"

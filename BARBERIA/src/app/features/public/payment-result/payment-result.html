@@ -1,0 +1,79 @@
+<section class="result-page">
+  <div class="result-card" aria-live="polite">
+
+    @switch (view()) {
+      @case ('checking') {
+        <div class="icon spinner" aria-hidden="true"></div>
+        <h1>Verificando tu pago…</h1>
+        <p>Estamos confirmando la transacción con el banco. No cierres esta página.</p>
+      }
+
+      @case ('waiting') {
+        <div class="icon spinner" aria-hidden="true"></div>
+        <h1>Tu pago está en proceso</h1>
+        <p>Algunos pagos (como PSE) tardan unos instantes en aprobarse. Esta página se actualiza sola cuando el banco responda.</p>
+        <p class="code-line">Código de reserva: <strong>{{ code }}</strong></p>
+      }
+
+      @case ('paid') {
+        <div class="icon ok" aria-hidden="true">✓</div>
+        <h1>¡Pago confirmado!</h1>
+        <p>Tu turno quedó reservado. Guarda tu código:</p>
+        <div class="booking-code">{{ booking()?.id }}</div>
+
+        <div class="summary">
+          <div><span>Servicio</span><strong>{{ booking()?.serviceName }}</strong></div>
+          <div><span>Barbero</span><strong>{{ booking()?.barberName }}</strong></div>
+          <div><span>Fecha</span><strong>{{ booking()?.date }}</strong></div>
+          <div><span>Hora</span><strong>{{ booking()?.time }} hs</strong></div>
+          <div class="sep"></div>
+          <div class="gold"><span>Seña pagada</span><strong>{{ formatPrice(booking()?.depositAmount ?? 0) }}</strong></div>
+          <div class="muted"><span>Restante en el local</span><strong>{{ formatPrice(remaining()) }}</strong></div>
+        </div>
+
+        <div class="actions">
+          @if (canSendWhatsApp()) {
+            <button type="button" class="btn btn-whatsapp" (click)="sendWhatsApp()">
+              @if (whatsappSent()) { ✓ Mensaje abierto } @else { 📱 Recibir confirmación por WhatsApp }
+            </button>
+          }
+          <a class="btn btn-primary" routerLink="/">Volver al inicio</a>
+        </div>
+      }
+
+      @case ('rejected') {
+        <div class="icon bad" aria-hidden="true">✕</div>
+        <h1>No se pudo completar el pago</h1>
+        <p>El banco no aprobó la transacción. No se te cobró nada. Puedes intentarlo de nuevo con otro medio de pago.</p>
+        @if (error()) { <p class="error">{{ error() }}</p> }
+        <div class="actions">
+          <button type="button" class="btn btn-primary" [disabled]="retrying()" (click)="retry()">
+            @if (retrying()) { Preparando… } @else { Intentar de nuevo }
+          </button>
+          <a class="btn btn-outline" routerLink="/reservar">Elegir otra hora</a>
+        </div>
+      }
+
+      @case ('expired') {
+        <div class="icon bad" aria-hidden="true">⌛</div>
+        <h1>La reserva venció</h1>
+        <p>No recibimos el pago a tiempo y la hora fue liberada. Si ya pagaste, escríbenos por WhatsApp con tu código <strong>{{ code }}</strong> y lo resolvemos.</p>
+        @if (error()) { <p class="error">{{ error() }}</p> }
+        <div class="actions">
+          <button type="button" class="btn btn-primary" [disabled]="retrying()" (click)="retry()">Reintentar el pago</button>
+          <a class="btn btn-outline" routerLink="/reservar">Hacer una nueva reserva</a>
+        </div>
+      }
+
+      @case ('notfound') {
+        <div class="icon bad" aria-hidden="true">?</div>
+        <h1>No encontramos esa reserva</h1>
+        <p>Revisa el enlace o haz una nueva reserva.</p>
+        <div class="actions">
+          <a class="btn btn-primary" routerLink="/reservar">Reservar turno</a>
+        </div>
+      }
+    }
+
+  </div>
+</section>

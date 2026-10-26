@@ -9,7 +9,7 @@
  * Si publicas la API en OTRA dirección distinta a la de la página, escríbela aquí:
  *   const PRODUCTION_API_URL = 'https://api.tubarberia.com/api';
  */
-const PRODUCTION_API_URL = '';
+const PRODUCTION_API_URL = 'https://barberia-zz3h.onrender.com/api';
 
 const host = location.hostname;
 const isLocal =
